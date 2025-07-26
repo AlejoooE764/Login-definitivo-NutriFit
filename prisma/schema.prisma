@@ -1,0 +1,49 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model AlimentacionPlan {
+  id            Int      @id @default(autoincrement())
+  nombre        String
+  descripcion   String?
+  fechaInicio   DateTime
+  fechaFin      DateTime
+  creadoEn      DateTime @default(now())
+  actualizadoEn DateTime
+  Comida        Comida[]
+}
+
+model Comida {
+  id               Int              @id @default(autoincrement())
+  tipo             String
+  hora             String?
+  descripcion      String
+  planId           Int
+  AlimentacionPlan AlimentacionPlan @relation(fields: [planId], references: [id])
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  password  String
+  role      Int?
+  name      String?
+  createdAt DateTime @default(now())
+  trainerId Int?
+  trainer   User?     @relation("Clients", fields: [trainerId], references: [id])
+  clients   User[]    @relation("Clients")
+
+  // Campos para recuperación
+  resetToken       String?   // token enviado por correo
+  resetTokenExpiry DateTime? // fecha de expiración
+}
+
+model Roles {
+  RolId Int @id @default(autoincrement())
+  Nombre String
+}

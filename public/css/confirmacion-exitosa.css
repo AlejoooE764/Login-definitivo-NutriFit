@@ -1,0 +1,81 @@
+:root {
+  --rojo-nutrifit: #d62828;
+  --verde-exito: #2ecc71;
+  --blanco: #ffffff;
+  --gris-suave: #f8f8f8;
+  --gris-texto: #555;
+  --sombra: rgba(0, 0, 0, 0.1);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+body {
+  background: linear-gradient(to right, #fefefe, #f0f9f0);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 20px;
+}
+
+.container {
+  max-width: 400px;
+  width: 100%;
+}
+
+.card {
+  background-color: var(--blanco);
+  padding: 40px 30px;
+  border-radius: 14px;
+  box-shadow: 0 12px 24px var(--sombra);
+  text-align: center;
+  animation: fadeIn 0.6s ease-in-out;
+}
+
+.check-icon {
+  font-size: 50px;
+  color: var(--verde-exito);
+  margin-bottom: 15px;
+}
+
+.card h1 {
+  color: var(--rojo-nutrifit);
+  margin-bottom: 10px;
+}
+
+.card p {
+  font-size: 16px;
+  color: var(--gris-texto);
+  margin-bottom: 30px;
+}
+
+.btn {
+  display: inline-block;
+  padding: 12px 25px;
+  background-color: var(--rojo-nutrifit);
+  color: var(--blanco);
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: bold;
+  transition: background 0.3s ease;
+}
+
+.btn:hover {
+  background-color: #b71d1d;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  } 
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

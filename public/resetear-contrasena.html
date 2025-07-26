@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Restablecer Contraseña | NutriFit</title>
+  <link rel="stylesheet" href="css/resetear-contrasena.css" />
+</head>
+<body>
+  <div class="container">
+    <div class="card">
+      <div class="lock-icon">🔒</div>
+      <h2>Restablecer Contraseña</h2>
+      <p>Ingresa el token que recibiste en tu correo y crea una nueva contraseña segura.</p>
+
+      <form action="/api/restablecer-contrasena" method="POST">
+        <label for="token">Token</label>
+        <input type="text" id="token" name="token" required />
+
+        <label for="nuevaContrasena">Nueva Contraseña</label>
+        <input type="password" id="nuevaContrasena" name="nuevaContrasena" required />
+
+        <button type="submit">Confirmar Cambio</button>
+      </form>
+
+      <div class="enlace">
+        <a href="login.html">← Volver al inicio de sesión</a>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

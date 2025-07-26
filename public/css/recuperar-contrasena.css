@@ -1,0 +1,113 @@
+:root {
+  --rojo-nutrifit: #d62828;
+  --rojo-hover: #b81c1c;
+  --gris-suave: #f1f1f1;
+  --gris-texto: #666;
+  --blanco: #ffffff;
+  --sombra: rgba(0, 0, 0, 0.1);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+body {
+  background: #fafafa;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  padding: 20px;
+}
+
+.container {
+  width: 100%;
+  max-width: 400px;
+}
+
+.card {
+  background-color: var(--blanco);
+  padding: 35px 30px;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px var(--sombra);
+  text-align: center;
+  animation: slideDown 0.5s ease-out;
+}
+
+.header {
+  font-size: 18px;
+  color: var(--rojo-nutrifit);
+  margin-bottom: 25px;
+}
+
+.header h2 {
+  font-size: 22px;
+  margin: 10px 0 5px;
+}
+
+.header p {
+  color: var(--gris-texto);
+  font-size: 14px;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+label {
+  text-align: left;
+  font-size: 14px;
+  color: #333;
+}
+
+input[type="email"] {
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 15px;
+}
+
+button {
+  padding: 12px;
+  background-color: var(--rojo-nutrifit);
+  color: var(--blanco);
+  font-weight: bold;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+button:hover {
+  background-color: var(--rojo-hover);
+}
+
+.footer {
+  margin-top: 20px;
+}
+
+.footer a {
+  color: var(--rojo-nutrifit);
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.footer a:hover {
+  text-decoration: underline;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Cambiar Contraseña - NutriFit</title>
+  <style>
+    body {
+      background-color: #e53935; /* rojo NutriFit */
+      color: white;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding-top: 50px;
+    }
+
+    form {
+      background-color: white;
+      color: black;
+      max-width: 400px;
+      margin: auto;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0px 0px 10px #00000050;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: none;
+      border-radius: 5px;
+      background-color: #f2f2f2;
+    }
+
+    button {
+      background-color: #e53935;
+      color: white;
+      border: none;
+      padding: 12px;
+      width: 100%;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #d32f2f;
+    }
+  </style>
+</head>
+<body>
+  <h2>Cambiar Contraseña</h2>
+  <form action="/api/auth/cambiar-contrasena" method="POST">
+    <input type="text" name="token" placeholder="Ingresa el token" required />
+    <input type="password" name="nuevaContrasena" placeholder="Nueva contraseña" required />
+    <button type="submit">Actualizar contraseña</button>
+  </form>
+</body>
+</html>

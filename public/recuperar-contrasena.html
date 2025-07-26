@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Recuperar Contraseña | NutriFit</title>
+  <link rel="stylesheet" href="css/recuperar-contrasena.css" />
+</head>
+<body>
+  <div class="container">
+    <div class="card">
+      <div class="header">
+        🔒
+        <h2>¿Olvidaste tu contraseña?</h2>
+        <p>Ingresa tu correo para enviarte un token de recuperación.</p>
+      </div>
+
+      <form action="/api/auth/recuperar-contrasena" method="POST">
+        <label for="email">Correo electrónico</label>
+        <input type="email" id="email" name="email" required placeholder="tucorreo@ejemplo.com" />
+
+        <button type="submit">Enviar Token</button>
+      </form>
+
+      <div class="footer">
+        <a href="login.html">Volver al inicio de sesión</a>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

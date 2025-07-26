@@ -1,0 +1,102 @@
+:root {
+  --rojo-nutrifit: #d62828;
+  --blanco: #ffffff;
+  --gris-claro: #f5f5f5;
+  --gris-texto: #666666;
+  --sombra: rgba(0, 0, 0, 0.1);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+  background: var(--gris-claro);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 20px;
+}
+
+.container {
+  width: 100%;
+  max-width: 420px;
+}
+
+.form-box {
+  background: var(--blanco);
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 8px 16px var(--sombra);
+  text-align: center;
+}
+
+.form-box h1 {
+  color: var(--rojo-nutrifit);
+  margin-bottom: 10px;
+}
+
+.form-box p {
+  color: var(--gris-texto);
+  margin-bottom: 20px;
+  font-size: 15px;
+}
+
+label {
+  display: block;
+  text-align: left;
+  margin-bottom: 5px;
+  font-weight: bold;
+  color: var(--gris-texto);
+}
+
+input, select {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 20px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+  transition: border-color 0.3s ease;
+}
+
+input:focus, select:focus {
+  border-color: var(--rojo-nutrifit);
+  outline: none;
+}
+
+button {
+  width: 100%;
+  padding: 12px;
+  background: var(--rojo-nutrifit);
+  color: var(--blanco);
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+button:hover {
+  background: #c21f1f;
+}
+
+.links {
+  margin-top: 16px;
+}
+
+.links a {
+  color: var(--rojo-nutrifit);
+  text-decoration: none;
+  font-size: 14px;
+  transition: color 0.2s ease;
+}
+
+.links a:hover {
+  color: #a31616;
+}
