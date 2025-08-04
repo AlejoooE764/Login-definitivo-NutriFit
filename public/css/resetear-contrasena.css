@@ -104,3 +104,45 @@ button:hover {
 .enlace a:hover {
   text-decoration: underline;
 }
+
+/* ✅ MENSAJES DE ÉXITO Y ERROR */
+.mensaje {
+  display: none;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  margin-top: 16px;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  animation: fadeIn 0.5s ease-in-out;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+  text-align: left;
+}
+
+/* ✅ Éxito */
+.mensaje.exito {
+  background-color: #e6f9f0;
+  color: #177a52;
+  border: 1px solid #a5e2c6;
+}
+
+/* ❌ Error */
+.mensaje.error {
+  background-color: #ffecec;
+  color: #b33636;
+  border: 1px solid #f5b7b7;
+}
+
+/* ✅ Animación suave */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

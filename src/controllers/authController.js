@@ -18,25 +18,29 @@ exports.register = async (req, res) => {
   const { name, email, password } = req.body;
 
   try {
+    if (!name || !email || !password) {
+      return res.status(400).send('Todos los campos son obligatorios.');
+    }
+
     const existingUser = await prisma.user.findUnique({ where: { email } });
     if (existingUser) {
-      return res.send('El usuario ya existe');
+      return res.status(409).send('El usuario ya existe');
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
     await prisma.user.create({
       data: {
-        name,
-        email,
+        name: name.trim(),
+        email: email.trim(),
         password: hashedPassword
       }
     });
 
-    res.status(200).json({ message: 'Usuario creado' })
+    res.status(201).json({ message: 'Usuario registrado exitosamente' });
   } catch (error) {
-    console.error(error);
-    res.status(500).send('Error al registrar usuario');
+    console.error('Error al registrar usuario:', error);
+    res.status(500).send('Error interno al registrar usuario');
   }
 };
 
@@ -47,10 +51,14 @@ exports.login = async (req, res) => {
   const { email, password } = req.body;
 
   try {
+    if (!email || !password) {
+      return res.status(400).send('Correo y contraseña son requeridos.');
+    }
+
     const user = await prisma.user.findUnique({ where: { email } });
 
     if (!user) {
-      return res.status(400).send('Usuario no encontrado');
+      return res.status(404).send('Usuario no encontrado');
     }
 
     const match = await bcrypt.compare(password, user.password);
@@ -58,15 +66,14 @@ exports.login = async (req, res) => {
       return res.status(401).send('Contraseña incorrecta');
     }
 
-    // Guardamos en sesión si está habilitado
     req.session.userId = user.id;
     req.session.userName = user.name;
     req.session.userEmail = user.email;
 
-    res.send('dashboard'); // Puedes devolver un indicador o redirigir
+    res.send('dashboard');
   } catch (error) {
-    console.error(error);
-    res.status(500).send('Error en el servidor');
+    console.error('Error en login:', error);
+    res.status(500).send('Error interno en el servidor');
   }
 };
 
@@ -76,7 +83,7 @@ exports.login = async (req, res) => {
 exports.logout = (req, res) => {
   req.session.destroy(err => {
     if (err) {
-      console.error(err);
+      console.error('Error al cerrar sesión:', err);
       return res.status(500).send('Error al cerrar sesión');
     }
     res.clearCookie('connect.sid');
@@ -91,9 +98,11 @@ exports.recuperarUsuario = async (req, res) => {
   const { email } = req.body;
 
   try {
-    const user = await prisma.user.findUnique({
-      where: { email },
-    });
+    if (!email) {
+      return res.status(400).send('El correo es obligatorio.');
+    }
+
+    const user = await prisma.user.findUnique({ where: { email } });
 
     if (!user) {
       return res.status(404).send('No se encontró un usuario con ese correo');
@@ -101,8 +110,8 @@ exports.recuperarUsuario = async (req, res) => {
 
     res.send(`Tu nombre de usuario es: ${user.name || user.email}`);
   } catch (error) {
-    console.error(error);
-    res.status(500).send('Error al recuperar el usuario');
+    console.error('Error al recuperar el usuario:', error);
+    res.status(500).send('Error interno');
   }
 };
 
@@ -113,10 +122,14 @@ exports.enviarTokenRecuperacion = async (req, res) => {
   const { email } = req.body;
 
   try {
+    if (!email) {
+      return res.status(400).json({ error: 'El correo es obligatorio.' });
+    }
+
     const usuario = await prisma.user.findUnique({ where: { email } });
 
     if (!usuario) {
-      return res.status(404).send('Correo no encontrado.');
+      return res.status(404).json({ error: 'Correo no encontrado.' });
     }
 
     const token = crypto.randomBytes(20).toString('hex');
@@ -131,10 +144,10 @@ exports.enviarTokenRecuperacion = async (req, res) => {
 
     await enviarTokenPorCorreo(email, token);
 
-    res.send('Se ha enviado un token a tu correo.');
+    res.status(200).json({ message: 'Se ha enviado un enlace de recuperación a tu correo.' });
   } catch (error) {
-    console.error(error);
-    res.status(500).send('Error al generar token');
+    console.error('Error al generar token:', error);
+    res.status(500).json({ error: 'Error al generar el token de recuperación' });
   }
 };
 
@@ -145,11 +158,15 @@ exports.cambiarContrasena = async (req, res) => {
   const { token, nuevaContrasena } = req.body;
 
   try {
+    if (!token || !nuevaContrasena) {
+      return res.status(400).send('Token y nueva contraseña son requeridos.');
+    }
+
     const usuario = await prisma.user.findFirst({
       where: {
         resetToken: token,
         resetTokenExpiry: {
-          gte: new Date(), // Verifica que no haya expirado
+          gte: new Date(), // No expirado
         },
       },
     });
@@ -169,10 +186,9 @@ exports.cambiarContrasena = async (req, res) => {
       },
     });
 
-    // 🔴 Redirige a la página de confirmación
     res.redirect('/confirmacion-exitosa.html');
   } catch (error) {
-    console.error(error);
+    console.error('Error al cambiar la contraseña:', error);
     res.status(500).send('Error al cambiar la contraseña');
   }
 };

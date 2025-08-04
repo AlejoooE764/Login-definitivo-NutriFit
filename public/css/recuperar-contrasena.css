@@ -1,6 +1,7 @@
 :root {
   --rojo-nutrifit: #d62828;
   --rojo-hover: #b81c1c;
+  --verde-exito: #28a745;
   --gris-suave: #f1f1f1;
   --gris-texto: #666;
   --blanco: #ffffff;
@@ -105,6 +106,59 @@ button:hover {
   from {
     opacity: 0;
     transform: translateY(-15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ✅ Mensaje de éxito */
+#mensajeExito {
+  display: none;
+  align-items: center;
+  gap: 10px;
+  background-color: #d4edda;
+  color: #155724;
+  padding: 12px 16px;
+  margin-top: 20px;
+  border-radius: 6px;
+  font-size: 14px;
+  border-left: 5px solid var(--verde-exito);
+  animation: fadeIn 0.4s ease-in-out;
+}
+
+#mensajeExito svg {
+  width: 20px;
+  height: 20px;
+  fill: #28a745;
+}
+
+/* ❌ Mensaje de error */
+#mensajeError {
+  display: none;
+  align-items: center;
+  gap: 10px;
+  background-color: #f8d7da;
+  color: #721c24;
+  padding: 12px 16px;
+  margin-top: 20px;
+  border-radius: 6px;
+  font-size: 14px;
+  border-left: 5px solid var(--rojo-nutrifit);
+  animation: fadeIn 0.4s ease-in-out;
+}
+
+#mensajeError svg {
+  width: 20px;
+  height: 20px;
+  fill: var(--rojo-nutrifit);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
   }
   to {
     opacity: 1;

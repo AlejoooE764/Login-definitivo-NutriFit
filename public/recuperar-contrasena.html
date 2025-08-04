@@ -15,17 +15,72 @@
         <p>Ingresa tu correo para enviarte un token de recuperación.</p>
       </div>
 
-      <form action="/api/auth/recuperar-contrasena" method="POST">
+      <form id="recuperarForm">
         <label for="email">Correo electrónico</label>
         <input type="email" id="email" name="email" required placeholder="tucorreo@ejemplo.com" />
 
         <button type="submit">Enviar Token</button>
       </form>
 
+      <!-- ✅ Mensaje de éxito -->
+      <div id="mensajeExito">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+          <path fill="currentColor" d="M10 0C4.5 0 0 4.5 0 10s4.5 10 10 10 10-4.5 10-10S15.5 0 10 0zm4.3 7.3l-5 5c-.2.2-.5.2-.7 0l-2.3-2.3c-.2-.2-.2-.5 0-.7l.7-.7c.2-.2.5-.2.7 0l1.5 1.5 4.3-4.3c.2-.2.5-.2.7 0l.7.7c.2.2.2.5 0 .7z"/>
+        </svg>
+        Se ha enviado un token a tu correo.
+      </div>
+
+      <!-- ❌ Mensaje de error -->
+      <div id="mensajeError">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+          <path fill="currentColor" d="M10 0C4.5 0 0 4.5 0 10s4.5 10 10 10 10-4.5 10-10S15.5 0 10 0zm1 14H9v-2h2v2zm0-4H9V6h2v4z"/>
+        </svg>
+        Correo no encontrado.
+      </div>
+
       <div class="footer">
         <a href="login.html">Volver al inicio de sesión</a>
       </div>
     </div>
   </div>
+
+  <script>
+    document.getElementById('recuperarForm').addEventListener('submit', async function (e) {
+      e.preventDefault();
+
+      const email = document.getElementById('email').value;
+      const mensajeExito = document.getElementById('mensajeExito');
+      const mensajeError = document.getElementById('mensajeError');
+
+      // Ocultar mensajes previos
+      mensajeExito.style.display = 'none';
+      mensajeError.style.display = 'none';
+
+      try {
+        const response = await fetch('/api/auth/recuperar-contrasena', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email })
+        });
+
+        if (response.ok) {
+          mensajeExito.style.display = 'flex';
+          setTimeout(() => {
+            window.location.href = 'resetear-contrasena.html';
+          }, 3000);
+        } else {
+          const mensaje = await response.json();
+          if (mensaje.error === "Correo no encontrado.") {
+            mensajeError.style.display = 'flex';
+          } else {
+            alert(mensaje.error || 'Error al enviar el correo de recuperación.');
+          }
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        alert('Ocurrió un error al intentar recuperar la contraseña.');
+      }
+    });
+  </script>
 </body>
 </html>

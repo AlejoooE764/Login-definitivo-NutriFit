@@ -13,7 +13,12 @@
       <h2>Restablecer Contraseña</h2>
       <p>Ingresa el token que recibiste en tu correo y crea una nueva contraseña segura.</p>
 
-      <form action="/api/restablecer-contrasena" method="POST">
+      <!-- 🔴 Contenedor de mensaje de error -->
+      <div id="mensajeError" class="mensaje error" style="display: none;">
+        ⚠️ Token inválido o expirado.
+      </div>
+
+      <form id="resetForm">
         <label for="token">Token</label>
         <input type="text" id="token" name="token" required />
 
@@ -28,5 +33,44 @@
       </div>
     </div>
   </div>
+
+  <script>
+    const mensajeError = document.getElementById('mensajeError');
+
+    document.getElementById('resetForm').addEventListener('submit', async function (e) {
+      e.preventDefault();
+      mensajeError.style.display = 'none'; // Oculta el mensaje al enviar
+
+      const token = document.getElementById('token').value;
+      const nuevaContrasena = document.getElementById('nuevaContrasena').value;
+
+      try {
+        const response = await fetch('/api/auth/resetear-contrasena', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ token, nuevaContrasena }),
+        });
+
+        if (response.ok) {
+          // ✅ Redirección si el token es válido y la contraseña se cambia correctamente
+          window.location.href = 'confirmacion-exitosa.html';
+        } else {
+          const mensaje = await response.text();
+          if (mensaje === 'Token inválido o expirado') {
+            mensajeError.textContent = '⚠️ Token inválido o expirado.';
+          } else {
+            mensajeError.textContent = '❌ ' + mensaje;
+          }
+          mensajeError.style.display = 'flex';
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        mensajeError.textContent = '❌ Hubo un problema al cambiar la contraseña.';
+        mensajeError.style.display = 'flex';
+      }
+    });
+  </script>
 </body>
 </html>
