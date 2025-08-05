@@ -15,12 +15,12 @@ router.get('/logout', authController.logout);
 // -----------------------------
 // RECUPERAR USUARIO (por correo)
 // -----------------------------
-router.post('/recuperar-usuario', authController.recuperarUsuario);
+router.post('/recuperar-usuario', authController.recuperarUsuario); // ✅ Esta es la función que busca el usuario y le envía su nombre
 
 // -----------------------------
-// SOLICITAR RECUPERACIÓN DE CONTRASEÑA (envía token)
+// SOLICITAR RECUPERACIÓN DE CONTRASEÑA (envía token por correo)
 // -----------------------------
-router.post('/recuperar-contrasena', authController.enviarTokenRecuperacion);
+router.post('/recuperar-contrasena', authController.enviarTokenRecuperacion); // ✅ Envía el token por correo
 
 // -----------------------------
 // CAMBIAR CONTRASEÑA USANDO TOKEN

@@ -100,3 +100,51 @@ button:hover {
 .links a:hover {
   color: #a31616;
 }
+
+/* ✅ MENSAJES DE ÉXITO Y ERROR */
+.message {
+  margin-top: 1rem;
+  padding: 1rem;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  animation: fadeIn 0.3s ease-in-out;
+  font-size: 14px;
+  gap: 8px;
+  text-align: center;
+}
+
+.message.success {
+  background-color: #e0f9ec;
+  color: #146c43;
+  border: 1px solid #a6dfc5;
+}
+
+.message.error {
+  background-color: #fdecea;
+  color: #a94442;
+  border: 1px solid #f5c6cb;
+}
+
+.message::before {
+  content: '✔';
+  font-size: 16px;
+}
+
+.message.error::before {
+  content: '✖';
+  font-size: 16px;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

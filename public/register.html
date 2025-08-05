@@ -5,6 +5,24 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Registro | NutriFit</title>
   <link rel="stylesheet" href="css/register.css" />
+  <style>
+    .message {
+      margin: 10px 0;
+      padding: 10px;
+      border-radius: 4px;
+      font-weight: bold;
+    }
+    .success {
+      background-color: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+    .error {
+      background-color: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+  </style>
 </head>
 <body>
   <div class="container">
@@ -12,14 +30,17 @@
       <h1>Crear Cuenta</h1>
       <p>Completa los campos para registrarte en NutriFit</p>
 
-      <form id="RegistrarUsuario">
-        <label for="nombre">Nombre completo</label>
+      <!-- ✅ Mensaje dinámico de éxito o error -->
+      <div id="mensaje" class="message" style="display: none;"></div>
+
+      <form id="RegistrarUsuario" action="/api/auth/register" method="POST">
+        <label for="name">Nombre completo</label>
         <input type="text" id="name" name="name" required />
 
-        <label for="correo">Correo electrónico</label>
+        <label for="email">Correo electrónico</label>
         <input type="email" id="email" name="email" required />
 
-        <label for="contrasena">Contraseña</label>
+        <label for="password">Contraseña</label>
         <input type="password" id="password" name="password" required />
 
         <button type="submit">Registrarse</button>
@@ -30,34 +51,30 @@
       </div>
     </div>
   </div>
+
+  <script>
+    // Mostrar mensaje basado en query string (?error=... o ?success=...)
+    window.addEventListener('DOMContentLoaded', () => {
+      const params = new URLSearchParams(window.location.search);
+      const mensaje = document.getElementById('mensaje');
+
+      if (params.has('error')) {
+        mensaje.classList.add('error');
+        mensaje.textContent = '❌ ' + decodeURIComponent(params.get('error'));
+        mensaje.style.display = 'block';
+      }
+
+      if (params.has('success')) {
+        mensaje.classList.add('success');
+        mensaje.textContent = '✅ ' + decodeURIComponent(params.get('success'));
+        mensaje.style.display = 'block';
+
+        // Redirigir después de 3 segundos
+        setTimeout(() => {
+          window.location.href = '/login.html';
+        }, 3000);
+      }
+    });
+  </script>
 </body>
 </html>
-
-<script>
-  document.getElementById('RegistrarUsuario').addEventListener('submit', async (e) => {
-    e.preventDefault();
-
-    const formData = new FormData(e.target);
-    const data = Object.fromEntries(formData.entries());
-
-    try {
-  const response = await fetch('/api/auth/register', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(data)
-  });
-
-  const texto = await response.text();
-  alert(texto);
-
-  if (response.ok && texto.includes('login')) {
-    window.location.href = '/login.html';
-  }
-} catch (error) {
-  console.error('Error al registrar:', error);
-  alert('Hubo un problema al registrar el usuario.');
-}
-  });
-</script>

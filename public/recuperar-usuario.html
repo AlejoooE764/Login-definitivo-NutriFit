@@ -10,11 +10,11 @@
   <div class="container">
     <div class="form-box">
       <h1>Recuperar Usuario</h1>
-      <p>Ingresa tu correo electrónico registrado. Te enviaremos tu usuario por correo.</p>
+      <p>Ingresa tu correo electrónico registrado. Te mostraremos tu usuario si existe.</p>
 
-      <form id="form-recuperar-usuario">
+      <form id="form-recuperar-usuario" method="POST" action="/api/auth/recuperar-usuario">
         <label for="correo">Correo electrónico</label>
-        <input type="email" id="correo" name="correo" required />
+        <input type="email" id="correo" name="email" required />
         <button type="submit">Enviar</button>
       </form>
 
@@ -27,40 +27,19 @@
   </div>
 
   <script>
-    document.getElementById('form-recuperar-usuario').addEventListener('submit', async function (e) {
-      e.preventDefault();
+    // Mostrar mensaje desde la URL si existe
+    const params = new URLSearchParams(window.location.search);
+    const mensajeDiv = document.getElementById('mensaje');
 
-      const email = document.getElementById('correo').value.trim();
-      const mensajeDiv = document.getElementById('mensaje');
-
-      try {
-        const res = await fetch('/api/auth/recuperar-usuario', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ email })
-        });
-
-        const data = await res.text();
-
-        mensajeDiv.style.display = 'block';
-        mensajeDiv.classList.remove('error', 'success');
-
-        if (!res.ok) {
-          mensajeDiv.classList.add('error');
-          mensajeDiv.innerHTML = `<i>❌</i> ${data}`;
-        } else {
-          mensajeDiv.classList.add('success');
-          mensajeDiv.innerHTML = `<i>✅</i> ${data}`;
-        }
-      } catch (error) {
-        mensajeDiv.style.display = 'block';
-        mensajeDiv.classList.remove('success');
-        mensajeDiv.classList.add('error');
-        mensajeDiv.innerHTML = `<i>❌</i> Error inesperado. Intenta nuevamente.`;
-      }
-    });
+    if (params.has('success')) {
+      mensajeDiv.textContent = '✅ ' + params.get('success');
+      mensajeDiv.className = 'message success';
+      mensajeDiv.style.display = 'block';
+    } else if (params.has('error')) {
+      mensajeDiv.textContent = '❌ ' + params.get('error');
+      mensajeDiv.className = 'message error';
+      mensajeDiv.style.display = 'block';
+    }
   </script>
 </body>
 </html>

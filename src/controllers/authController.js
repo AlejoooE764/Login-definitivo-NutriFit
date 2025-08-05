@@ -1,30 +1,27 @@
-// Importamos Prisma Client
+// src/controllers/authController.js
+
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
-// Importamos bcrypt para el hash de contraseñas
 const bcrypt = require('bcrypt');
-
-// Para generar token aleatorio
 const crypto = require('crypto');
 
-// Para enviar correos
-const { enviarTokenPorCorreo } = require('../utils/emailSender');
+const { enviarTokenPorCorreo, enviarUsuarioPorCorreo } = require('../utils/emailSender');
 
 // -----------------------------
 // REGISTRO DE USUARIO
 // -----------------------------
-exports.register = async (req, res) => {
+const register = async (req, res) => {
   const { name, email, password } = req.body;
 
   try {
     if (!name || !email || !password) {
-      return res.status(400).send('Todos los campos son obligatorios.');
+      return res.redirect('/register.html?error=Todos los campos son obligatorios.');
     }
 
     const existingUser = await prisma.user.findUnique({ where: { email } });
     if (existingUser) {
-      return res.status(409).send('El usuario ya existe');
+      return res.redirect('/register.html?error=Este correo ya está registrado.');
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -37,17 +34,17 @@ exports.register = async (req, res) => {
       }
     });
 
-    res.status(201).json({ message: 'Usuario registrado exitosamente' });
+    return res.redirect('/register.html?success=Usuario registrado exitosamente');
   } catch (error) {
     console.error('Error al registrar usuario:', error);
-    res.status(500).send('Error interno al registrar usuario');
+    return res.redirect('/register.html?error=Ocurrió un error al registrar el usuario.');
   }
 };
 
 // -----------------------------
 // INICIO DE SESIÓN
 // -----------------------------
-exports.login = async (req, res) => {
+const login = async (req, res) => {
   const { email, password } = req.body;
 
   try {
@@ -80,7 +77,7 @@ exports.login = async (req, res) => {
 // -----------------------------
 // CIERRE DE SESIÓN
 // -----------------------------
-exports.logout = (req, res) => {
+const logout = (req, res) => {
   req.session.destroy(err => {
     if (err) {
       console.error('Error al cerrar sesión:', err);
@@ -94,42 +91,44 @@ exports.logout = (req, res) => {
 // -----------------------------
 // RECUPERAR USUARIO POR CORREO
 // -----------------------------
-exports.recuperarUsuario = async (req, res) => {
+const recuperarUsuario = async (req, res) => {
   const { email } = req.body;
 
   try {
     if (!email) {
-      return res.status(400).send('El correo es obligatorio.');
+      return res.redirect('/recuperar-usuario.html?error=El correo es obligatorio.');
     }
 
     const user = await prisma.user.findUnique({ where: { email } });
 
     if (!user) {
-      return res.status(404).send('No se encontró un usuario con ese correo');
+      return res.redirect('/recuperar-usuario.html?error=No se encontró un usuario con ese correo.');
     }
 
-    res.send(`Tu nombre de usuario es: ${user.name || user.email}`);
+    await enviarUsuarioPorCorreo(user.email, user.name);
+
+    return res.redirect('/recuperar-usuario.html?success=Te enviamos tu nombre de usuario al correo');
   } catch (error) {
     console.error('Error al recuperar el usuario:', error);
-    res.status(500).send('Error interno');
+    return res.redirect('/recuperar-usuario.html?error=Error interno al recuperar el usuario');
   }
 };
 
 // -----------------------------
 // ENVÍO DE TOKEN POR CORREO
 // -----------------------------
-exports.enviarTokenRecuperacion = async (req, res) => {
+const enviarTokenRecuperacion = async (req, res) => {
   const { email } = req.body;
 
   try {
     if (!email) {
-      return res.status(400).json({ error: 'El correo es obligatorio.' });
+      return res.redirect('/recuperar-contrasena.html?error=El correo es obligatorio.');
     }
 
     const usuario = await prisma.user.findUnique({ where: { email } });
 
     if (!usuario) {
-      return res.status(404).json({ error: 'Correo no encontrado.' });
+      return res.redirect('/recuperar-contrasena.html?error=Correo no encontrado.');
     }
 
     const token = crypto.randomBytes(20).toString('hex');
@@ -144,17 +143,17 @@ exports.enviarTokenRecuperacion = async (req, res) => {
 
     await enviarTokenPorCorreo(email, token);
 
-    res.status(200).json({ message: 'Se ha enviado un enlace de recuperación a tu correo.' });
+    res.redirect('/recuperar-contrasena.html?success=Se ha enviado un enlace de recuperación a tu correo.');
   } catch (error) {
     console.error('Error al generar token:', error);
-    res.status(500).json({ error: 'Error al generar el token de recuperación' });
+    res.redirect('/recuperar-contrasena.html?error=Error al generar el token de recuperación.');
   }
 };
 
 // -----------------------------
 // CAMBIO DE CONTRASEÑA USANDO TOKEN
 // -----------------------------
-exports.cambiarContrasena = async (req, res) => {
+const cambiarContrasena = async (req, res) => {
   const { token, nuevaContrasena } = req.body;
 
   try {
@@ -166,7 +165,7 @@ exports.cambiarContrasena = async (req, res) => {
       where: {
         resetToken: token,
         resetTokenExpiry: {
-          gte: new Date(), // No expirado
+          gte: new Date(),
         },
       },
     });
@@ -191,4 +190,14 @@ exports.cambiarContrasena = async (req, res) => {
     console.error('Error al cambiar la contraseña:', error);
     res.status(500).send('Error al cambiar la contraseña');
   }
+};
+
+// Exportaciones
+module.exports = {
+  register,
+  login,
+  logout,
+  recuperarUsuario,
+  enviarTokenRecuperacion,
+  cambiarContrasena
 };
